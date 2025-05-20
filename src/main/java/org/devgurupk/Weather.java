@@ -1,5 +1,6 @@
 package org.devgurupk;
 
+import io.quarkus.logging.Log;
 import java.util.Map;
 
 import org.devgurupk.client.WeatherClient;
@@ -21,6 +22,7 @@ public class Weather {
 
   @Tool(description = "Get weather alerts for a US state.")
   String getAlerts(@ToolArg(description = "Two-letter US state code (e.g. CA, NY)") String state) {
+    Log.infof("Getting alerts for state: %s", state);
     return weatherFormatter.formatAlerts(weatherClient.getAlerts(state));
   }
 
@@ -29,7 +31,7 @@ public class Weather {
                      @ToolArg(description = "Longitude of the location") double longitude) {
     var points = weatherClient.getPoints(latitude, longitude);
     var url = Qute.fmt("{p.properties.forecast}", Map.of("p", points));
-
+    Log.infof("Getting forecast for location: %s", url);
     return weatherFormatter.formatForecast(weatherClient.getForecast(url));
   }
 }

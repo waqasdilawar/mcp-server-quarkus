@@ -1,66 +1,120 @@
-# mcp-server
-
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
-
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
-
-## Running the application in dev mode
-
-You can run your application in dev mode that enables live coding using:
-
-```shell script
-./mvnw quarkus:dev
+# Weather MCP Server
+A Quarkus-based Model Context Protocol (MCP) server that provides weather information using the National Weather Service API.
+## What is Model Context Protocol (MCP)?
+Model Context Protocol (MCP) is a standardized protocol that allows AI models to discover and use external tools. This project implements an MCP server that provides weather forecast and alert tools that can be called by AI models or other MCP clients.
+The server uses the Quarkiverse MCP Server extension to expose tools as a standard MCP API, making it easier for AI systems to access real-time weather data.
+## Weather Tools Provided
+This server provides two main tools:
+1. **getAlerts** - Retrieves active weather alerts for a specified US state
+``` json
+   {
+     "name": "getAlerts",
+     "arguments": {
+       "state": "CA"  // Two-letter US state code
+     }
+   }
 ```
+1. **getForecast** - Retrieves weather forecast for a geographic location
+``` json
+   {
+     "name": "getForecast",
+     "arguments": {
+       "latitude": 37.7749,  // Latitude coordinate
+       "longitude": -122.4194  // Longitude coordinate
+     }
+   }
+```
+## Project Structure
+- Main class containing tool definitions using annotations `Weather.java``@Tool`
+- REST client to communicate with the National Weather Service API `WeatherClient.java`
+- Formats the raw API responses into human-readable text `WeatherFormatter.java`
+- Model classes for API responses (Alerts, Forecast, etc.)
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+## Getting Started
+### Prerequisites
+- Java 24 or newer
+- Maven (for building)
+- JBang (for running with MCP Inspector)
+- Node.js with npm (for the MCP Inspector)
 
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
+### Running with Maven
+``` shell
+# Build and package as uber-jar
 ./mvnw package
+java -jar target/mcp-server-1.0.0-SNAPSHOT-runner.jar
+```
+### Running with JBang
+This project is configured to work with JBang for easy execution. The application.properties includes configuration to build an uber-jar that can be run with JBang:
+``` shell
+# Build the uber-jar
+./mvnw package
+
+# Run with JBang
+jbang org.devgurupk:mcp-server:1.0.0-SNAPSHOT:runner
+```
+## Testing with MCP Inspector
+You can use the Model Context Protocol Inspector to test and interact with the MCP server:
+``` shell
+  npx @modelcontextprotocol/inspector
 ```
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+By default, the server exposes the MCP endpoint at the root path (), as configured in application.properties: `/`
+``` properties
+quarkus.mcp.server.sse.root-path=/
+## Configuration Options
+The application.properties file contains important configurations:
+``` properties
+# Follow redirects from the weather API
+quarkus.rest-client.follow-redirects=true
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+# Package as uber-jar for JBang compatibility
+quarkus.package.jar.type=uber-jar
 
-If you want to build an _über-jar_, execute the following command:
+# Logging configuration
+quarkus.log.file.enable=true
+quarkus.log.file.path=weather-quarkus.log
 
-```shell script
+# MCP server configuration
+quarkus.mcp.server.sse.root-path=/
+```
+Uncomment the debugging options in application.properties if you need more detailed logs:
+``` properties
+# Debug logging options
+#quarkus.log.level=DEBUG
+#quarkus.mcp.server.traffic-logging.enabled=true
+#quarkus.mcp.server.traffic-logging.text-limit=100
+```
+## Technical Details
+- **Framework**: Quarkus 3.22.3
+- **Java Version**: Java 21
+- **MCP Implementation**: Quarkiverse MCP Server 1.0.0
+- **API Source**: National Weather Service (api.weather.gov)
+- **Key Libraries**:
+    - Quarkus REST Client with Jackson
+    - Quarkus Qute templating
+    - Quarkiverse MCP Server (StdIO mode)
+
+## Building for Production
+### Uber-JAR (Recommended for JBang)
+``` shell
 ./mvnw package -Dquarkus.package.jar.type=uber-jar
 ```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
+The uber-jar is created at `target/mcp-server-1.0.0-SNAPSHOT-runner.jar`
+### Native Executable (Optional)
+``` shell
+# Native build with GraalVM installed
 ./mvnw package -Dnative
-```
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
+# Or using containers if GraalVM is not installed
 ./mvnw package -Dnative -Dquarkus.native.container-build=true
 ```
+## How It Works
+The project uses the Model Context Protocol to expose weather data tools:
+1. The annotation in marks methods as tools available through the MCP API `@Tool``Weather.java`
+2. The annotation describes the parameters that each tool requires `@ToolArg`
+3. The interfaces with the National Weather Service API `WeatherClient`
+4. The class formats the responses for human readability `WeatherFormatter`
+5. The Quarkus MCP Server extension provides the server implementation that allows tools to be discovered and used by MCP clients
 
-You can then execute your native executable with: `./target/mcp-server-1.0.0-SNAPSHOT-runner`
+When an MCP client like the Inspector connects, it receives a list of available tools with their descriptions and can then invoke them by name with the appropriate arguments.
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
