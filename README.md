@@ -89,7 +89,7 @@ Uncomment the debugging options in application.properties if you need more detai
 ```
 ## Technical Details
 - **Framework**: Quarkus 3.22.3
-- **Java Version**: Java 21
+- **Java Version**: Java 23
 - **MCP Implementation**: Quarkiverse MCP Server 1.0.0
 - **API Source**: National Weather Service (api.weather.gov)
 - **Key Libraries**:
