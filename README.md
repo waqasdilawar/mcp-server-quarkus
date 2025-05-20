@@ -57,6 +57,9 @@ You can use the Model Context Protocol Inspector to test and interact with the M
 ``` shell
   npx @modelcontextprotocol/inspector
 ```
+![img.png](img.png)
+Add this to arguments:
+`--quiet org.devgurupk:mcp-server:1.0.0-SNAPSHOT:runner`
 
 By default, the server exposes the MCP endpoint at the root path (), as configured in application.properties: `/`
 ``` properties
