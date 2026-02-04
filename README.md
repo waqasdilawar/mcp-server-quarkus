@@ -52,6 +52,20 @@ This project is configured to work with JBang for easy execution. The applicatio
 # Run with JBang
 jbang org.devgurupk:mcp-server:1.0.0-SNAPSHOT:runner
 ```
+## Testing with Postman
+You can use Postman to test the weather tools:
+![img_2.png](img_2.png)
+
+```json
+{
+    "mcpServers": {
+        "http://localhost:8080/mcp/sse": {
+            "url": "http://localhost:8080/sse"
+        }
+    }
+}
+```
+
 ## Testing with MCP Inspector
 You can use the Model Context Protocol Inspector to test and interact with the MCP server:
 ``` shell
