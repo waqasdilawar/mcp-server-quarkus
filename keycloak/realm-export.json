@@ -10,15 +10,40 @@
       "directAccessGrantsEnabled": true,
       "redirectUris": [
         "http://localhost:8080/*",
+        "http://localhost:6274/*",
         "https://oauth.pstmn.io/v1/callback"
       ],
       "webOrigins": [
         "http://localhost:8080",
-        "https://oauth.pstmn.io"
+        "http://localhost:6274",
+        "https://oauth.pstmn.io",
+        "*"
+      ],
+      "defaultClientScopes": [
+        "openid",
+        "mcp-server-audience"
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256"
       }
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "mcp-server-audience",
+      "protocol": "openid-connect",
+      "protocolMappers": [
+        {
+          "name": "mcp-server-audience-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "mcp-server",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        }
+      ]
     }
   ],
   "users": [
