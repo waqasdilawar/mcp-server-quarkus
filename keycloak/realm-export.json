@@ -155,6 +155,25 @@
           }
         }
       ]
+    },
+    {
+      "name": "basic",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "sub",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-sub-mapper",
+          "config": {
+            "access.token.claim": "true",
+            "id.token.claim": "true"
+          }
+        }
+      ]
     }
   ],
   "users": [
@@ -210,7 +229,8 @@
           ],
           "allowed-optional-client-scopes": [
             "offline_access",
-            "microprofile-jwt"
+            "microprofile-jwt",
+            "basic"
           ]
         }
       },
