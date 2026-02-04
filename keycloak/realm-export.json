@@ -149,7 +149,7 @@
           "protocol": "openid-connect",
           "protocolMapper": "oidc-audience-mapper",
           "config": {
-            "included.client.audience": "mcp-server",
+            "included.custom.audience": "mcp-server",
             "id.token.claim": "false",
             "access.token.claim": "true"
           }
@@ -219,13 +219,19 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "allow-default-scopes": ["true"],
-          "allow-optional-scopes": ["true"],
+          "allow-default-scopes": [
+            "true"
+          ],
+          "allow-optional-scopes": [
+            "true"
+          ],
           "allowed-default-client-scopes": [
             "mcp-server-audience",
             "openid",
             "profile",
-            "email"
+            "email",
+            "basic",
+            "offline_access"
           ],
           "allowed-optional-client-scopes": [
             "offline_access",
