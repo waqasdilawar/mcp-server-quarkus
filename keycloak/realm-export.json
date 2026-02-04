@@ -172,6 +172,16 @@
             "access.token.claim": "true",
             "id.token.claim": "true"
           }
+        },
+        {
+          "name": "mcp-server-audience-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.custom.audience": "mcp-server",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
         }
       ]
     }
