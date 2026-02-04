@@ -105,9 +105,10 @@ You can use the Model Context Protocol Inspector to test and interact with the M
 Add this to arguments:
 `--quiet org.devgurupk:mcp-server:1.0.0-SNAPSHOT:runner`
 
-By default, the server exposes the MCP endpoint at the root path (), as configured in application.properties: `/`
+By default, the server exposes the MCP endpoint at the path `/mcp`, as configured in `application.properties`:
 ``` properties
-quarkus.mcp.server.sse.root-path=/
+quarkus.mcp.server.sse.root-path=/mcp
+```
 ## Configuration Options
 The application.properties file contains important configurations:
 ``` properties
@@ -122,7 +123,7 @@ quarkus.log.file.enable=true
 quarkus.log.file.path=weather-quarkus.log
 
 # MCP server configuration
-quarkus.mcp.server.sse.root-path=/
+quarkus.mcp.server.sse.root-path=/mcp
 ```
 Uncomment the debugging options in application.properties if you need more detailed logs:
 ``` properties

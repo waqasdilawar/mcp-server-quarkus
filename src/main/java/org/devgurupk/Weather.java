@@ -10,6 +10,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
 import io.quarkus.qute.Qute;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.inject.Inject;
 
 public class Weather {
@@ -19,6 +20,9 @@ public class Weather {
 
   @Inject
   WeatherFormatter weatherFormatter;
+
+  @Inject
+  SecurityIdentity identity;
 
   @Tool(description = "Get weather alerts for a US state.")
   String getAlerts(@ToolArg(description = "Two-letter US state code (e.g. CA, NY)") String state) {
@@ -36,5 +40,10 @@ public class Weather {
     var url = Qute.fmt("{p.properties.forecast}", Map.of("p", points));
     Log.infof("Getting forecast for location: %s", url);
     return weatherFormatter.formatForecast(weatherClient.getForecast(url));
+  }
+
+  @Tool(description = "Get the authenticated user's name")
+  String getUserInfo() {
+    return "Hello, " + identity.getPrincipal().getName() + "!";
   }
 }
