@@ -52,19 +52,49 @@ This project is configured to work with JBang for easy execution. The applicatio
 # Run with JBang
 jbang org.devgurupk:mcp-server:1.0.0-SNAPSHOT:runner
 ```
-## Testing with Postman
-You can use Postman to test the weather tools:
-![img_2.png](img_2.png)
+## Authentication (OAuth 2.1)
 
-```json
-{
-    "mcpServers": {
-        "http://localhost:8080/mcp/sse": {
-            "url": "http://localhost:8080/sse"
-        }
-    }
-}
-```
+This MCP server is secured using **OAuth 2.1** with Keycloak as the identity provider.
+
+### Quick Setup
+
+1. **Start Keycloak:**
+   ```bash
+   docker compose up -d
+   ```
+
+2. **Start the MCP Server:**
+   ```bash
+   mvn quarkus:dev
+   ```
+
+3. **Keycloak Admin:** http://localhost:8180 (admin/admin)
+
+### Test User Credentials
+- Username: `testuser`
+- Password: `password`
+
+## Testing with Postman (OAuth 2.0)
+
+Configure Postman's Authorization tab with these settings:
+
+| Setting | Value |
+|---------|-------|
+| Type | OAuth 2.0 |
+| Grant Type | Authorization Code (With PKCE) |
+| Auth URL | `http://localhost:8180/realms/mcp-realm/protocol/openid-connect/auth` |
+| Token URL | `http://localhost:8180/realms/mcp-realm/protocol/openid-connect/token` |
+| Client ID | `mcp-server` |
+| Code Challenge Method | SHA-256 |
+| Scope | `openid` |
+
+![Postman OAuth Settings](docs/postman-oauth-settings.png)
+
+**Steps:**
+1. Click **Get New Access Token**
+2. Login with `testuser` / `password`
+3. Click **Use Token**
+4. Connect to `http://localhost:8080/mcp/sse`
 
 ## Testing with MCP Inspector
 You can use the Model Context Protocol Inspector to test and interact with the MCP server:
@@ -75,9 +105,10 @@ You can use the Model Context Protocol Inspector to test and interact with the M
 Add this to arguments:
 `--quiet org.devgurupk:mcp-server:1.0.0-SNAPSHOT:runner`
 
-By default, the server exposes the MCP endpoint at the root path (), as configured in application.properties: `/`
+By default, the server exposes the MCP endpoint at the path `/mcp`, as configured in `application.properties`:
 ``` properties
-quarkus.mcp.server.sse.root-path=/
+quarkus.mcp.server.sse.root-path=/mcp
+```
 ## Configuration Options
 The application.properties file contains important configurations:
 ``` properties
@@ -92,7 +123,7 @@ quarkus.log.file.enable=true
 quarkus.log.file.path=weather-quarkus.log
 
 # MCP server configuration
-quarkus.mcp.server.sse.root-path=/
+quarkus.mcp.server.sse.root-path=/mcp
 ```
 Uncomment the debugging options in application.properties if you need more detailed logs:
 ``` properties
