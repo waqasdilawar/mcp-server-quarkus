@@ -54,7 +54,7 @@ jbang org.devgurupk:mcp-server:1.0.0-SNAPSHOT:runner
 ```
 ## Authentication (OAuth 2.1)
 
-This MCP server is secured using **OAuth 2.1** with Keycloak as the identity provider.
+This MCP server is secured using **OAuth 2.1** with Keycloak as the identity provider. It supports both **static clients** (like Postman) and **Dynamic Client Registration** (for tools like JetBrains AI Assistant).
 
 ### Quick Setup
 
@@ -73,6 +73,21 @@ This MCP server is secured using **OAuth 2.1** with Keycloak as the identity pro
 ### Test User Credentials
 - Username: `testuser`
 - Password: `password`
+
+### Dynamic Client Registration (DCR)
+
+This server supports OAuth 2.0 Dynamic Client Registration, enabling MCP clients like **JetBrains AI Assistant** and **Claude Desktop** to automatically register themselves with Keycloak.
+
+**Tested with:**
+- ✅ JetBrains AI Assistant (Antigravity)
+- ✅ MCP Inspector
+- ✅ Postman
+
+#### How DCR Works
+1. The MCP client discovers the authorization server via `/.well-known/oauth-protected-resource`
+2. Client dynamically registers with Keycloak (no manual client setup needed)
+3. User authenticates via Keycloak login
+4. Token is validated locally by the Quarkus server
 
 ## Testing with Postman (OAuth 2.0)
 
